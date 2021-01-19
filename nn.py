@@ -45,9 +45,9 @@ class Layer:
         # A_dash:   derivative of the layer output after activation
         self.Z = np.zeros_like(self.bias)
         self.A = np.zeros_like(self.bias)
-        self.A_dash = np.zeros_like(self.bias)
+        self.Adash = np.zeros_like(self.bias)
 
-        self.activation = activation
+        self.activation = str.lower(activation)
 
     def forward(self,inputs):
         '''
