@@ -27,7 +27,7 @@ class Layer:
 
         '''
 
-        #check if the size forms of a tuple and activation as a string
+        # check if the size forms of a tuple and activation as a string
         assert(type(size) == tuple)
         assert(type(activation) == str)
 
@@ -60,9 +60,12 @@ class Layer:
         Args:
             inputs: a numpy array with the previous layer values (or the network inputs)
 
+        Return:
+            a forward propagation step value after applying activation function
+
         Shape:
-            - Input: size (1, N) N: number of features
-            - Output: size(1, m)
+            - Input: inputs (1, N) N: number of features
+            - Output: (1, m)
 
         Examples:
             layer = nn.Layer(size=(3,5), activation='ReLU')
@@ -76,7 +79,7 @@ class Layer:
         self.Z = np.dot(inputs,self.weights) + self.bias
 
         # evaluate the results after the activation
-        self.A, self.Adash = eval(self.activation+"(value = self.Z, inputs = inputs)")
+        self.A, self.Adash = eval(self.activation+"(Z = self.Z)")
         return self.A
         
     def __call__(self,inputs):
@@ -88,9 +91,12 @@ class Layer:
         Args:
             inputs: a numpy array with the previous layer values (or the network inputs)
 
+        Return:
+            a forward propagation step value after applying activation function
+
         Shape:
-            - Input: size (1, N) N: number of features
-            - Output: size(1, m)
+            - Input: inputs (1, N) N: number of features
+            - Output: (1, m)
 
         Examples:
             layer = nn.Layer(size=(3,5), activation='ReLU')
@@ -143,9 +149,12 @@ class Model:
         Args:
             inputs: a numpy array with the network inputs
 
+        Return:
+            a forward propagation iteration value for the whole network
+        
         Shape:
-            - Input: size (1, N) N: number of features
-            - Output: size(1, m) m: number of nurans at output
+            - Input: inputs (1, N) N: number of features
+            - Output: (1, m) m: number of nurans at output
 
         Examples:
             model = nn.Model(
@@ -154,6 +163,8 @@ class Model:
             )
             model.forward(np.array([1,6,-2]))
         '''
+        
+        assert(type(inputs) == np.ndarray)
 
         self.x = inputs
         for layer in self.layers:
@@ -175,9 +186,12 @@ class Model:
         Args:
             inputs: a numpy array with the network inputs
 
+        Return:
+            a forward propagation iteration value for the whole network
+        
         Shape:
-            - Input: size (1, N) N: number of features
-            - Output: size(1, m) m: number of nurans at output
+            - Input:  inputs (1, N) N: number of features
+            - Output: (1, m) m: number of nurans at output
 
         Examples:
             model = nn.Model(
@@ -193,3 +207,72 @@ class Model:
         ## to be added
         self.loss = loss_fn
         pass
+
+    def evaluate(self,test_x,test_y,metric='Accuracy',beta=1.0):
+        '''
+        Calculate the evaluation matrices for the testing dataset
+
+        Args:
+            test_x: a numpy array with the network testing inputs
+            test_y: a numpy array with the network testing true labels
+            metric: metric name(s) as string or list of strings:
+                    avliable metrics:
+                        - Accuracy
+                        - Confusion matrix
+                        - Precision
+                        - Recall
+                        - F1 score
+                        - FBeta score
+                Default: Accuracy
+            beta: a hyperparameter value used to calculate FBeta score
+
+        Shape:
+            - Input:
+                test_x (K, N) K:number of testing samples, N: number of features
+                test_y (K, m) K:number of testing samples, m: number of nurans at output
+            - Output:
+                the specified metric value(s)
+                beside storing all metrics in model variables as follows:
+                    self.accuracy [0-1] value
+                    self.confusion_matrix (2,2) matrix
+                    self.recall  [0-1] value
+                    self.precision [0-1] value
+                    self.f1_score [0-1] value
+                    self.fbeta_score [0-1] value
+        Examples:
+            P,R,F1 = model.evaluate(
+                        np.array([[1,6,-2],[3,9,12],[7,-3,4]]),
+                        np.array([[0],[1],[1]]),
+                        metric=['Precision','Recall','F1_score','FBeta_score'],
+                        beta=0.6
+                    )
+        '''
+        assert(type(test_x) == np.ndarray)
+        assert(type(test_y) == np.ndarray)
+        assert(type(metric) == str or type(metric) == list)
+        assert(type(beta) == float)
+
+        # propagate in forward iteration over testing data
+        test_y_hat = self.forward(test_x)
+
+        # calculate True Positive, True Negative, False Positive, False Negative respectively
+        self.TP = (np.equal(test_y_hat,1) & np.equal(test_y,1)).sum()
+        self.TN = (np.equal(test_y_hat,0) & np.equal(test_y,0)).sum()
+        self.FP = (np.equal(test_y_hat,1) & np.equal(test_y,0)).sum()
+        self.FN = (np.equal(test_y_hat,0) & np.equal(test_y,1)).sum()
+
+        # calculate evaluation matrics
+        self.accuracy = (self.TP+self.TN)/(self.TP+self.TN+self.FP+self.FN+(10E-9 if self.TP == 0 else 0))
+        self.confusion_matrix = np.array([[self.TP,self.FP],[self.FN,self.TN]])
+        self.precision = (self.TP)/(self.TP+self.FP+(10E-9 if self.TP+self.FP == 0 else 0))
+        self.recall = (self.TP)/(self.TP+self.FN+(10E-9 if self.TP+self.FN == 0 else 0))
+        self.f1_score = 2*(self.precision*self.recall)/(self.precision+self.recall+(10E-9 if self.TP == 0 else 0))
+        self.fbeta_score = (1+beta**2)*(self.precision*self.recall)/(beta**2*self.precision+self.recall+(10E-9 if self.TP == 0 else 0))
+        
+        # return the targeted metric(s) 
+        if type(metric) == str:
+            metric = [metric]
+        out = list()
+        for m in metric:
+            out.append(eval('self.'+'_'.join(list(filter(lambda w: w != "" , str.lower(m).split(" "))))))
+        return out
