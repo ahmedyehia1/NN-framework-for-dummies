@@ -63,4 +63,25 @@ def batch(model,sample):
             model.layers[n].weights_Grad += dl_dw
             dl_db=dactivation
             model.layers[n].bias_Grad += np.transpose(dl_db)             
-            saved_drevative = np.dot(model.layers[n].weights.transpose(),saved_drevative)        
+            saved_drevative = np.dot(model.layers[n].weights.transpose(),saved_drevative)
+
+
+def norm(model, size_of_dataset):
+    norms_weights = 0.0
+    norms_bias = 0.0
+    for i in len(model.layers):
+        norms_weights += np.norm(model.layers[i].weights_Grad / size_of_dataset)
+        norms_bias += np.norm(model.layers[i].bias_Grad / size_of_dataset)
+    return norms_weights + norms_bias
+
+
+def init_delta(model):
+    for i in len(model.layers):
+        model.layers[i].weights_Grad = np.zeros_like(model.layers[i].weights)
+        model.layers[i].bias_Grad = np.zeros_like(model.layers[i].bias)
+
+
+def update_weights_bias(model, alpha, size_of_dataset):
+    for i in len(model.layers):
+        model.layers[i].weights = model.layers[i].weights - alpha * (model.layers[i].weights_Grad / size_of_dataset)
+        model.layers[i].bias = model.layers[i].bias - alpha * (model.layers[i].bias_Grad / size_of_dataset)
