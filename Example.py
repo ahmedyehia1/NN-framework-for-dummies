@@ -28,5 +28,5 @@ print(y_hat)
 model.fit(x)
 ##
 
-accuracy = model.evaluate(test_x,test_y)
-print(accuracy)
+# accuracy = model.evaluate(test_x,test_y)
+# print(accuracy)
