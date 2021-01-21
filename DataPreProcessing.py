@@ -10,22 +10,13 @@ import math
 
 class DataPreProcessing:
     
-    def get_label(path):
-        df = pd.read_csv(path)
-        df.columns = df.columns.map(str.lower)
-        return df['label'].to_numpy()
-        
-    def get_X(path):  
-        df = pd.read_csv(path)
-        df.columns = df.columns.map(str.lower)
-        return df.loc[:, df.columns != 'label'].to_numpy()
     
     def get_data(path, label_path = "", shuffle = False):
         df = pd.read_csv(path)
         #df.columns = df.columns.map(str.lower)
         if(label_path != ""):
             print(label_path)
-            df['label'] = pd.read_csv(label_path)['Label'] #there is one str.lower here
+            df['label'] = pd.read_csv(label_path)['Label']
         if(shuffle):
             df = df.sample(frac = 1)
         X = df.loc[:, df.columns != 'label'].to_numpy()
@@ -35,7 +26,6 @@ class DataPreProcessing:
     def normalize(matrix):
         mean = matrix.mean()
         variance = matrix.var()
-        #self.normMatrix = (matrix - mean)/math.sqrt(variance+0.0000001)
         return (matrix - mean)/math.sqrt(variance+0.0000001)
         
     def split_data(X, label):
