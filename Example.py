@@ -19,13 +19,13 @@ test_x = np.array([
     [5,4,-1]
 ])
 test_y = np.array([[0],[1]])
+label = np.array([[50] , [70] , [40]])
 
+#y_hat = model.forward(x)
 
-y_hat = model.forward(x)
-print(y_hat)
 
 # not completed yet
-model.fit(x)
+model.fit(x,label,'SGD','MSE',1,0.01)
 ##
 
 # accuracy = model.evaluate(test_x,test_y)

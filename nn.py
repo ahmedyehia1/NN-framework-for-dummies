@@ -1,7 +1,7 @@
 import numpy as np
 import optimization as opt
 from Activations import *
-
+import Losses as loss
 # encapsulate Layers parameters
 class Layer:
     def __init__(self,size,activation='Identity'):
@@ -207,23 +207,27 @@ class Model:
 
 
 
-    def fit(model,dataset_input,optimization_type,alpha,epsilon):
-    if(optimization_type == 'SGD'):
-        while(True):
-            opt.init_delta(model)
-            for i in dataset_input:
-                opt.sgd(model,alpha,i)      
-            if(norm(model) < epsilon):
-                break
-      #-------------------------------------------      
-    elif(optimization_type == 'batch'):
-          while(True):
-            opt.init_delta(model)
-            for i in dataset_input:
-                opt.batch(model,i)
-            update_weights_bias(model,alpha,len(dataset_input)) 
-            if(norm(model,len(dataset_input)) < epsilon):
-                break
+    def fit(self,dataset_input,label,optimization_type,loss_type,alpha,epsilon):
+        if(optimization_type == 'SGD'):
+            while(True):
+                opt.init_delta(self)
+                for i in range(len(dataset_input)):
+                    self.forward(dataset_input[i].reshape(1,-1))
+                    loss_value , dloss = loss.mse_loss(self.y,label[i].reshape(1,-1))
+                    opt.sgd(self,alpha,dataset_input[i].reshape(1,-1),dloss)                    
+                if(opt.norm(self) < epsilon):
+                    break
+          #-------------------------------------------      
+        elif(optimization_type == 'batch'):
+              while(True):
+                opt.init_delta(self)
+                for i in dataset_input:
+                    self.forward(dataset_input[i])
+                    loss_value , dloss = loss.mse_loss(self.y,label[i])
+                    opt.batch(self,alpha,dataset_input[i],dloss)
+                opt.update_weights_bias(self,alpha,len(dataset_input)) 
+                if(opt.norm(self,len(dataset_input)) < epsilon):
+                    break
 
 
 
