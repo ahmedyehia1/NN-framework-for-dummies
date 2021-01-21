@@ -18,5 +18,8 @@ def L1_loss(A,Y):
     Loss_dash = (1/(m))*vf(A-Y)
     return Loss,Loss_dash
 
-
+def softmax_loss(A,Y):
+    Loss  = np.sum(-np.log(np.sum(np.multiply(A,Y),axis = 1,keepdims=True)))
+    Loss_dash = Y*(- 1) + A
+    return Loss,Loss_dash
 
