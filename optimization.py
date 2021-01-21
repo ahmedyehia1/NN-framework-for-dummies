@@ -38,12 +38,11 @@ def sgd(model,alpha,sample,dloss):
                 dl_dw=np.dot(dactivation,model.layers[n-1].A)
             model.layers[n].weights_Grad += dl_dw
             dl_db=dactivation
-            model.layers[n].bias_Grad += np.transpose(dl_db)
-            print(np.shape(model.layers[n].weights))        
+            model.layers[n].bias_Grad += np.transpose(dl_db)        
             saved_drevative = np.dot(model.layers[n].weights.transpose(),saved_drevative)        
-        model.layers[i].weights=model.layers[n].weights-alpha*dl_dw
-        model.layers[i].bias=model.layers[n].bias-alpha*np.transpose(dl_db)
-        print(model.layers[i].weights)
+        model.layers[n].weights=model.layers[n].weights-alpha*dl_dw
+        model.layers[n].bias=model.layers[n].bias-alpha*np.transpose(dl_db)
+        #print(n , model.layers[n].weights)
         
 def batch(model,sample,dloss):
     for i in range(len(model.layers)):
@@ -71,8 +70,8 @@ def norm(model, size_of_dataset):
     norms_weights = 0.0
     norms_bias = 0.0
     for i in range(len(model.layers)):
-        norms_weights += np.norm(model.layers[i].weights_Grad / size_of_dataset)
-        norms_bias += np.norm(model.layers[i].bias_Grad / size_of_dataset)
+        norms_weights += np.linalg.norm(model.layers[i].weights_Grad / size_of_dataset)
+        norms_bias += np.linalg.norm(model.layers[i].bias_Grad / size_of_dataset)
     return norms_weights + norms_bias
 
 

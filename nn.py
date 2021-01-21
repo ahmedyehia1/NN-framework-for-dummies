@@ -214,8 +214,9 @@ class Model:
                 for i in range(len(dataset_input)):
                     self.forward(dataset_input[i].reshape(1,-1))
                     loss_value , dloss = loss.mse_loss(self.y,label[i].reshape(1,-1))
-                    opt.sgd(self,alpha,dataset_input[i].reshape(1,-1),dloss)                    
-                if(opt.norm(self) < epsilon):
+                    opt.sgd(self,alpha,dataset_input[i].reshape(1,-1),dloss)
+                print(opt.norm(self,len(dataset_input)))                    
+                if(opt.norm(self,len(dataset_input)) < epsilon):
                     break
           #-------------------------------------------      
         elif(optimization_type == 'batch'):
