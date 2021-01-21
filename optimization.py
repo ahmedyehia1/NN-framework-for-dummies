@@ -6,15 +6,6 @@ Created on Thu Jan 21 19:16:28 2021
 """
 
 import numpy as np
-
-#output of activation function is model.layers[n].output [1 x number of neurons]
-#loss function used is model.loss (string)
-#input example is model.x vector[1 x n] (row per example)
-#label vector model.y (value for each example)
-#drevative of activation function of each layer===> model.layers[n].Adash
-#NOTES:
-    #EPSILON OF THE MODEL IS NEEDED
-    #ALPHA OF THE MODEL IS NEEDED
 def dl_dy (loss,ycap,y,inp,label):
     if(loss == 'mse'):#Regression
         return(ycap-y)
