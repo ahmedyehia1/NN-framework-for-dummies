@@ -1,4 +1,5 @@
 import numpy as np
+import optimization as opt
 from Activations import *
 
 # encapsulate Layers parameters
@@ -204,10 +205,27 @@ class Model:
 
         return self.forward(inputs)
 
-    def fit(self,epoch,loss_fn='mse',optim='sgd',optim_options={'lr': 0.001}):
-        ## to be added
-        self.loss = loss_fn
-        pass
+
+
+    def fit(model,dataset_input,optimization_type,alpha,epsilon):
+    if(optimization_type == 'SGD'):
+        while(True):
+            opt.init_delta(model)
+            for i in dataset_input:
+                opt.sgd(model,alpha,i)      
+            if(norm(model) < epsilon):
+                break
+      #-------------------------------------------      
+    elif(optimization_type == 'batch'):
+          while(True):
+            opt.init_delta(model)
+            for i in dataset_input:
+                opt.batch(model,i)
+            update_weights_bias(model,alpha,len(dataset_input)) 
+            if(norm(model,len(dataset_input)) < epsilon):
+                break
+
+
 
     def evaluate(self,test_x,test_y,metric='Accuracy',beta=1.0):
         '''
