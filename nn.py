@@ -34,7 +34,8 @@ class Layer:
         self.inSize = size[0]
         self.outSize = size[1]
         # initialize weights and biases
-        self.weights = np.random.randn(*size)
+        # weight of size (layer neurans no. , prev layer neurans no.)
+        self.weights = np.random.randn(self.outSize,self.inSize)
         self.bias = np.random.randn(1,self.outSize)
 
         # initialize weights and biases gradient
@@ -76,7 +77,7 @@ class Layer:
         assert(inputs.shape[1] == self.inSize)
 
         # linear w*x + b forward propagtion step
-        self.Z = np.dot(inputs,self.weights) + self.bias
+        self.Z = np.dot(inputs,self.weights.T) + self.bias
 
         # evaluate the results after the activation
         self.A, self.Adash = eval(self.activation+"(Z = self.Z)")
