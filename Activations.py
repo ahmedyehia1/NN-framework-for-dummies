@@ -18,7 +18,7 @@ def relu(Z):
 def softmax(Z):
     A = np.exp(Z)
     A = np.divide(A,np.sum(A,axis = 1,keepdims=True))
-    A_dash = A
+    A_dash = np.ones_like(A)
     return A,A_dash
 
 def leakyrelu(Z):
