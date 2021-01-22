@@ -207,6 +207,14 @@ class Model:
 
 #opt.norm(self,len(dataset_input))
     def fit(self,dataset_input,label,optimization_type,loss_type,alpha,epoch):
+        if len(label.shape) == 1:
+            label.reshape(-1,1)
+        if label.shape[1] == 1 and self.layers[-1].outSize != 1:
+            tmp = np.zeros((dataset_input.shape[0],self.layers[-1].outSize))
+            rows = np.arange(start = 0,stop = dataset_input.shape[0],step =1)
+            label = np.squeeze(label)
+            tmp[rows,label] = 1
+            label = tmp
         counter = 0
         if(optimization_type == 'SGD'):
             while(True):
