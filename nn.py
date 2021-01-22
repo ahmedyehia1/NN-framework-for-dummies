@@ -36,8 +36,8 @@ class Layer:
         self.outSize = size[1]
         # initialize weights and biases
         # weight of size (layer neurans no. , prev layer neurans no.)
-        self.weights = np.random.randn(self.outSize,self.inSize)
-        self.bias = np.random.randn(1,self.outSize)
+        self.weights = np.ones((self.outSize,self.inSize))
+        self.bias = np.ones((1,self.outSize))
 
         # initialize weights and biases gradient
         self.weights_Grad = np.zeros_like(self.weights)
@@ -79,7 +79,6 @@ class Layer:
 
         # linear w*x + b forward propagtion step
         self.Z = np.dot(inputs,self.weights.T) + self.bias
-
         # evaluate the results after the activation
         self.A, self.Adash = eval(self.activation+"(Z = self.Z)")
         return self.A
@@ -206,30 +205,37 @@ class Model:
         return self.forward(inputs)
 
 
-
-    def fit(self,dataset_input,label,optimization_type,loss_type,alpha,epsilon):
+#opt.norm(self,len(dataset_input))
+    def fit(self,dataset_input,label,optimization_type,loss_type,alpha,epoch):
+        counter = 0
         if(optimization_type == 'SGD'):
             while(True):
-                opt.init_delta(self)
+                counter += 1
+                loss_acc = 0
+                opt.init_delta(self)                                    
                 for i in range(len(dataset_input)):
                     self.forward(dataset_input[i].reshape(1,-1))
                     loss_value , dloss = loss.mse_loss(self.y,label[i].reshape(1,-1))
+                    loss_acc += loss_value
                     opt.sgd(self,alpha,dataset_input[i].reshape(1,-1),dloss)
-                print(opt.norm(self,len(dataset_input)))                    
-                if(opt.norm(self,len(dataset_input)) < epsilon):
+                print(loss_acc/len(dataset_input)  , self.layers[-1].A)
+                if(counter > epoch):
                     break
           #-------------------------------------------      
         elif(optimization_type == 'batch'):
               while(True):
+                counter += 1
+                loss_acc = 0
                 opt.init_delta(self)
-                for i in dataset_input:
-                    self.forward(dataset_input[i])
-                    loss_value , dloss = loss.mse_loss(self.y,label[i])
-                    opt.batch(self,alpha,dataset_input[i],dloss)
+                for i in range(len(dataset_input)):
+                    self.forward(dataset_input[i].reshape(1,-1))
+                    loss_value , dloss = loss.mse_loss(self.y,label[i].reshape(1,-1))
+                    loss_acc += loss_value
+                    opt.batch(self,dataset_input[i].reshape(1,-1),dloss)
                 opt.update_weights_bias(self,alpha,len(dataset_input)) 
-                if(opt.norm(self,len(dataset_input)) < epsilon):
+                print(loss_acc/len(dataset_input)  , self.layers[-1].A)
+                if(counter > epoch):
                     break
-
 
 
     def evaluate(self,test_x,test_y,metric='Accuracy',beta=1.0):
