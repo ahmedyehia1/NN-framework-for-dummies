@@ -215,7 +215,7 @@ class Model:
                 opt.init_delta(self)                                    
                 for i in range(len(dataset_input)):
                     self.forward(dataset_input[i].reshape(1,-1))
-                    loss_value , dloss = loss.mse_loss(self.y,label[i].reshape(1,-1))
+                    loss_value , dloss =eval("loss."+str.lower(loss_type)+"(A = self.y , Y = label[i].reshape(1,-1))")
                     loss_acc += loss_value
                     opt.sgd(self,alpha,dataset_input[i].reshape(1,-1),dloss)
                 print(loss_acc/len(dataset_input)  , self.layers[-1].A)
@@ -229,7 +229,7 @@ class Model:
                 opt.init_delta(self)
                 for i in range(len(dataset_input)):
                     self.forward(dataset_input[i].reshape(1,-1))
-                    loss_value , dloss = loss.mse_loss(self.y,label[i].reshape(1,-1))
+                    loss_value , dloss = eval("loss."+str.lower(loss_type)+"(A = self.y , Y = label[i].reshape(1,-1))")
                     loss_acc += loss_value
                     opt.batch(self,dataset_input[i].reshape(1,-1),dloss)
                 opt.update_weights_bias(self,alpha,len(dataset_input)) 
