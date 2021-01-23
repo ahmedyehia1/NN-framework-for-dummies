@@ -13,10 +13,11 @@ class DataPreProcessing:
     
     def get_data(path, label_path = "", shuffle = False):
         df = pd.read_csv(path)
-        #df.columns = df.columns.map(str.lower)
+        df.columns = df.columns.map(str.lower)
         if(label_path != ""):
-            print(label_path)
-            df['label'] = pd.read_csv(label_path)['Label']
+            df_temp = pd.read_csv(label_path)
+            df_temp.columns = df_temp.columns.map(str.lower)
+            df['label'] = df_temp['label']
         if(shuffle):
             df = df.sample(frac = 1)
         X = df.loc[:, df.columns != 'label'].to_numpy()
