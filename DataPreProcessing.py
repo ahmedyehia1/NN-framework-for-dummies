@@ -16,7 +16,7 @@ class DataPreProcessing:
         df.columns = df.columns.map(str.lower)
         if(label_path != ""):
             df_temp = pd.read_csv(label_path)
-            df.columns = df.columns.map(str.lower)
+            df_temp.columns = df_temp.columns.map(str.lower)
             df['label'] = df_temp['label']
         if(shuffle):
             df = df.sample(frac = 1)
