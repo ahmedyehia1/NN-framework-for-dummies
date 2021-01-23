@@ -4,6 +4,21 @@ import os
 
 class visualization:
     def __init__(self, name="the graph", line1="loss", line2="percision"):
+        
+        '''
+        Create a graph with a specific name and line names if there is two lines:
+        Args:
+            name: a string holds the graph name
+            line1: a string holds the first line name
+            line2: a string holds the seconde line name
+            
+        Shape:
+            - Input: graph and lines names
+            - Output: None
+        Examples:
+            p1 = visualization("graph_title","first_line","seconde_line")
+        '''
+
         self.value1 = []
         self.value2 = []
         self.value3 = []
@@ -20,6 +35,22 @@ class visualization:
         # plt.show(block = False)
 
     def add_point_to_graph(self,new_value3,it,epoch):
+        
+        '''
+        update the graph by adding the new point to it and print it 
+        and check if the final step reached we save the figure into picture and print it:
+        Args:
+            new_value3: a new value to be added to the graph
+            it: an integer holds the number of the iteration
+            epoch: an integer holds the number of the iteration witch we stop at
+            
+        Shape:
+            - Input: three integer values
+            - Output: None
+        Examples:
+            p1.add_point_to_graph(5,1,100)
+        '''
+
         self.value3.append(new_value3)
 
 
@@ -34,6 +65,20 @@ class visualization:
             os.startfile("last.png")
 
     def add_two_points_to_graph(self,new_value1,new_value2):
+        
+        '''
+        update the graph by adding two new points to it then print it:
+        Args:
+            new_value1: a new value to be added to the graph
+            new_value2: a new value to be added to the graph
+            
+        Shape:
+            - Input: two integer values
+            - Output: None
+        Examples:
+            p1.add_two_points_to_graph(10,4)
+        '''
+        
         self.value1.append(new_value1)
         self.value2.append(new_value2)
 
@@ -45,15 +90,3 @@ class visualization:
             plt.legend()
             # plt.draw()
             plt.pause(10E-9)
-
-# # default values
-# graph_title = "the graph"
-# first_line = "loss"
-# seconde_line = "percision"
-#
-# p1 = visualization(graph_title,first_line,seconde_line)
-# # p1 = visualization()  # optional attributes
-#
-# p1.add_point_to_graph(5) # add point to the line to draw (one line) # will work after 2nd point
-# p1.add_two_points_to_graph(10,4) # draw two lines
-#
