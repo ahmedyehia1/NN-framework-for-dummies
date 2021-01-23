@@ -210,7 +210,7 @@ class Model:
         if(graph_on):
             self.graph = vis()
         if len(label.shape) == 1:
-            label.reshape(-1,1)
+            label = label.reshape(-1,1)
         if label.shape[1] == 1 and self.layers[-1].outSize != 1:
             tmp = np.zeros((dataset_input.shape[0],self.layers[-1].outSize))
             rows = np.arange(start = 0,stop = dataset_input.shape[0],step =1)
@@ -229,7 +229,7 @@ class Model:
                     loss_acc += loss_value
                     opt.sgd(self,alpha,dataset_input[i].reshape(1,-1),dloss)
                 if(graph_on):
-                    self.graph.add_point_to_graph(loss_acc)
+                    self.graph.add_point_to_graph(loss_acc/len(dataset_input),counter,epoch)
                 print(loss_acc/len(dataset_input)  , self.layers[-1].A)
                 if(counter > epoch):
                     break
@@ -246,7 +246,7 @@ class Model:
                     opt.batch(self,dataset_input[i].reshape(1,-1),dloss)
                 opt.update_weights_bias(self,alpha,len(dataset_input))
                 if(graph_on):
-                    self.graph.add_point_to_graph(loss_acc)
+                    self.graph.add_point_to_graph(loss_acc/len(dataset_input),epoch)
                 print(loss_acc/len(dataset_input)  , self.layers[-1].A)
                 if(counter > epoch):
                     break
@@ -297,7 +297,7 @@ class Model:
         assert(type(beta) == float)
 
         # propagate in forward iteration over testing data
-        test_y_hat = self.forward(test_x)
+        test_y_hat = np.round(self.forward(test_x))
 
         # calculate True Positive, True Negative, False Positive, False Negative respectively
         self.TP = (np.equal(test_y_hat,1) & np.equal(test_y,1)).sum()

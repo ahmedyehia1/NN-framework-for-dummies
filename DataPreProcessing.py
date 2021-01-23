@@ -46,7 +46,7 @@ class DataPreProcessing:
 #X     = data.get_X('C:/Users/Mohamed Amr/Documents/Computer & Systems Engineering/4th CSE/First Term/Neural Networks/digit-recognizer/train.csv')
 #label = data.get_label('C:/Users/Mohamed Amr/Documents/Computer & Systems Engineering/4th CSE/First Term/Neural Networks/digit-recognizer/train.csv')
 
-X, label = DataPreProcessing.get_data("C:/Users/Mohamed Amr/Documents/Computer & Systems Engineering/4th CSE/First Term/Neural Networks/digit-recognizer/train.csv", shuffle = True)
-X_train, X_test, label_train, label_test = DataPreProcessing.split_data(X, label)
-print("X_train: {}, Label_train: {}, X_test: {}, Label_test: {}".format(X_train.shape, X_test.shape, label_train.shape, label_test.shape))
-print(DataPreProcessing.normalize(X))
+# X, label = DataPreProcessing.get_data("C:/Users/Mohamed Amr/Documents/Computer & Systems Engineering/4th CSE/First Term/Neural Networks/digit-recognizer/train.csv", shuffle = True)
+# X_train, X_test, label_train, label_test = DataPreProcessing.split_data(X, label)
+# print("X_train: {}, Label_train: {}, X_test: {}, Label_test: {}".format(X_train.shape, X_test.shape, label_train.shape, label_test.shape))
+# print(DataPreProcessing.normalize(X))

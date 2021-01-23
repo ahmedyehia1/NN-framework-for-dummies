@@ -1,18 +1,17 @@
 import matplotlib.pyplot as plt
 from matplotlib import style
+import os
 
 class visualization:
-    def __init__(self,name="the graph",line1="loss",line2="percision"):
+    def __init__(self, name="the graph", line1="loss", line2="percision"):
         self.value1 = []
         self.value2 = []
         self.value3 = []
-
         self.line1 = line1
         self.line2 = line2
-
+        self.name = name
 
         style.use('fivethirtyeight')
-        # plt.xlabel('iteration')
 
         fig = plt.figure(name)
         self.ax1 = fig.add_subplot(1, 1, 1)
@@ -20,7 +19,7 @@ class visualization:
         plt.show()
         # plt.show(block = False)
 
-    def add_point_to_graph(self,new_value3):
+    def add_point_to_graph(self,new_value3,it,epoch):
         self.value3.append(new_value3)
 
 
@@ -29,7 +28,10 @@ class visualization:
             # self.ax1.plot(self.counter, self.value , c='black')
             self.ax1.plot( self.value3 )
             # plt.draw()
-            plt.pause(.001)
+            plt.pause(10E-9)
+        if it == epoch:
+            plt.savefig("last.png")
+            os.startfile("last.png")
 
     def add_two_points_to_graph(self,new_value1,new_value2):
         self.value1.append(new_value1)
@@ -42,7 +44,7 @@ class visualization:
             self.ax1.plot(self.value2,label=self.line2)
             plt.legend()
             # plt.draw()
-            plt.pause(.001)
+            plt.pause(10E-9)
 
 # # default values
 # graph_title = "the graph"
