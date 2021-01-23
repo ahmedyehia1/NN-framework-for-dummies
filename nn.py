@@ -2,6 +2,7 @@ import numpy as np
 import optimization as opt
 from Activations import *
 import Losses as loss
+from visualization import visualization as vis
 # encapsulate Layers parameters
 class Layer:
     def __init__(self,size,activation='Identity'):
@@ -52,7 +53,6 @@ class Layer:
         self.Adash = np.zeros_like(self.bias)
 
         self.activation = str.lower(activation)
-
     def forward(self,inputs):
         '''
         Calculate a forward propagation step:
@@ -206,7 +206,9 @@ class Model:
 
 
 #opt.norm(self,len(dataset_input))
-    def fit(self,dataset_input,label,optimization_type,loss_type,alpha,epoch):
+    def fit(self,dataset_input,label,optimization_type,loss_type,alpha,epoch,graph_on = False):
+        if(graph_on):
+            self.graph = vis()
         if len(label.shape) == 1:
             label.reshape(-1,1)
         if label.shape[1] == 1 and self.layers[-1].outSize != 1:
@@ -226,6 +228,8 @@ class Model:
                     loss_value , dloss =eval("loss."+str.lower(loss_type)+"(A = self.y , Y = label[i].reshape(1,-1))")
                     loss_acc += loss_value
                     opt.sgd(self,alpha,dataset_input[i].reshape(1,-1),dloss)
+                if(graph_on):
+                    self.graph.add_point_to_graph(loss_acc)
                 print(loss_acc/len(dataset_input)  , self.layers[-1].A)
                 if(counter > epoch):
                     break
@@ -240,7 +244,9 @@ class Model:
                     loss_value , dloss = eval("loss."+str.lower(loss_type)+"(A = self.y , Y = label[i].reshape(1,-1))")
                     loss_acc += loss_value
                     opt.batch(self,dataset_input[i].reshape(1,-1),dloss)
-                opt.update_weights_bias(self,alpha,len(dataset_input)) 
+                opt.update_weights_bias(self,alpha,len(dataset_input))
+                if(graph_on):
+                    self.graph.add_point_to_graph(loss_acc)
                 print(loss_acc/len(dataset_input)  , self.layers[-1].A)
                 if(counter > epoch):
                     break
