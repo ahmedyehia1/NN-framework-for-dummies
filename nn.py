@@ -207,6 +207,27 @@ class Model:
 
 #opt.norm(self,len(dataset_input))
     def fit(self,dataset_input,label,optimization_type,loss_type,alpha,epoch,graph_on = False):
+	'''
+        Executing the learning process for a given dataset:
+        Args:
+            dataset_input: a numpy array with source inputs
+	    label: a numpy array with correct label for each example
+	    optimization_type: a string indicates the required learning optmization type
+            loss_type: a string indicates the required output loss function to use
+            alpha: a float number indicates the required learning rate
+            epoch: an integer number required for number of iterations in learning process
+            graph_on: a boolean typed value to visualize the process
+
+        Return:
+            None
+        
+        Shape:
+            The shape has no changes, it just changes the current values for learning
+
+        Examples:
+            model.fit(X_train,label_train,'SGD','MSE',alpha = 0.0001,epoch = 50,graph_on = True)
+        '''
+
         if(graph_on):
             self.graph = vis()
         if len(label.shape) == 1:
