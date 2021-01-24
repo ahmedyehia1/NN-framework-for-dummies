@@ -16,7 +16,7 @@ x = Data.normalize(x)
 X_train, X_test, label_train, label_test = Data.split_data(x,label)
 
 # Train the model
-model.fit(X_train,label_train,'SGD','MSE',alpha = 0.0001,epoch = 5,graph_on = False)
+model.fit(X_train,label_train,'SGD','MSE',alpha = 0.0001,epoch = 15,graph_on = True)
 
 # evaluate the model
 [accuracy,f1_score,confusion_matrix] = model.evaluate(X_test,label_test,metric = ['accuracy','f1 score','confusion matrix'])

@@ -210,19 +210,18 @@ class Model:
         return self.forward(inputs)
 
 
-#opt.norm(self,len(dataset_input))
     def fit(self,dataset_input,label,optimization_type,loss_type,alpha,epoch,graph_on = False):
-	'''
+        '''
         Executing the learning process for a given dataset:
         Args:
             dataset_input: a numpy array with source inputs
-	    label: a numpy array with correct label for each example
-	    optimization_type: a string indicates the required learning optmization type
+            label: a numpy array with correct label for each example
+            optimization_type: a string indicates the required learning optmization type
             loss_type: a string indicates the required output loss function to use
             alpha: a float number indicates the required learning rate
             epoch: an integer number required for number of iterations in learning process
             graph_on: a boolean typed value to visualize the process
-
+        
         Return:
             None
         
