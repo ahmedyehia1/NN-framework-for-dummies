@@ -1,8 +1,13 @@
 import numpy as np
+import pandas as pd
 import optimization as opt
-from Activations import *
+import Activations as Act
 import Losses as loss
 from visualization import visualization as vis
+from save_load import import_saved_weights,save_weights
+import PIL, shutil, os
+
+
 # encapsulate Layers parameters
 class Layer:
     def __init__(self,size,activation='Identity'):
@@ -80,7 +85,7 @@ class Layer:
         # linear w*x + b forward propagtion step
         self.Z = np.dot(inputs,self.weights.T) + self.bias
         # evaluate the results after the activation
-        self.A, self.Adash = eval(self.activation+"(Z = self.Z)")
+        self.A, self.Adash = eval(f"Act.{self.activation}(Z = self.Z)")
         return self.A
         
     def __call__(self,inputs):
@@ -209,6 +214,8 @@ class Model:
     def fit(self,dataset_input,label,optimization_type,loss_type,alpha,epoch,graph_on = False):
         if(graph_on):
             self.graph = vis()
+            if not os.path.exists('Loss'):
+                os.mkdir("Loss")
         if len(label.shape) == 1:
             label = label.reshape(-1,1)
         if label.shape[1] == 1 and self.layers[-1].outSize != 1:
@@ -230,8 +237,12 @@ class Model:
                     opt.sgd(self,alpha,dataset_input[i].reshape(1,-1),dloss)
                 if(graph_on):
                     self.graph.add_point_to_graph(loss_acc/len(dataset_input),counter,epoch)
-                print(loss_acc/len(dataset_input)  , self.layers[-1].A)
+                print(f"epoch: {counter},    Loss = {loss_acc/len(dataset_input)}")
                 if(counter > epoch):
+                    if(graph_on):
+                        im = PIL.Image.open("Loss/0.png")
+                        im.save('Loss.gif', save_all=True, append_images=[PIL.Image.open(f"Loss/{i}.png") for i in range(0,epoch)])
+                        shutil.rmtree("Loss")
                     break
           #-------------------------------------------      
         elif(optimization_type == 'batch'):
@@ -246,9 +257,13 @@ class Model:
                     opt.batch(self,dataset_input[i].reshape(1,-1),dloss)
                 opt.update_weights_bias(self,alpha,len(dataset_input))
                 if(graph_on):
-                    self.graph.add_point_to_graph(loss_acc/len(dataset_input),epoch)
-                print(loss_acc/len(dataset_input)  , self.layers[-1].A)
+                    self.graph.add_point_to_graph(loss_acc/len(dataset_input),counter,epoch)
+                print(f"epoch: {counter},    Loss = {loss_acc/len(dataset_input)}")
                 if(counter > epoch):
+                    if(graph_on):
+                        im = PIL.Image.open("Loss/0.png")
+                        im.save('Loss.gif', save_all=True, append_images=[PIL.Image.open(f"Loss/{i}.png") for i in range(0,epoch)])
+                        shutil.rmtree("Loss")
                     break
 
 
@@ -298,7 +313,8 @@ class Model:
 
         # propagate in forward iteration over testing data
         test_y_hat = np.round(self.forward(test_x))
-
+        test_y = test_y.reshape(-1,1)
+        
         # calculate True Positive, True Negative, False Positive, False Negative respectively
         self.TP = (np.equal(test_y_hat,1) & np.equal(test_y,1)).sum()
         self.TN = (np.equal(test_y_hat,0) & np.equal(test_y,0)).sum()
@@ -307,7 +323,7 @@ class Model:
 
         # calculate evaluation matrics
         self.accuracy = (self.TP+self.TN)/(self.TP+self.TN+self.FP+self.FN+(10E-9 if self.TP == 0 else 0))
-        self.confusion_matrix = np.array([[self.TP,self.FP],[self.FN,self.TN]])
+        self.confusion_matrix = pd.DataFrame(np.array([[self.TP,self.FP],[self.FN,self.TN]]),index=['Positive','Negative'] ,columns=['True','False'])
         self.precision = (self.TP)/(self.TP+self.FP+(10E-9 if self.TP+self.FP == 0 else 0))
         self.recall = (self.TP)/(self.TP+self.FN+(10E-9 if self.TP+self.FN == 0 else 0))
         self.f1_score = 2*(self.precision*self.recall)/(self.precision+self.recall+(10E-9 if self.TP == 0 else 0))
@@ -320,3 +336,39 @@ class Model:
         for m in metric:
             out.append(eval('self.'+'_'.join(list(filter(lambda w: w != "" , str.lower(m).split(" "))))))
         return out
+
+    def save(self,path = "model.NND"):
+        '''
+        Save model Object on Disk
+
+        Args:
+            Path to the model to be saved
+                Default: "model.NND"
+
+        Shape:
+            - Input:
+                path: string
+            - Output:
+                None
+        Examples:
+            model.save("my model.NND")
+        '''
+        save_weights(self,path)
+
+
+def load(path):
+    '''
+    Import loaded model from Disk
+
+    Args:
+        Path to the model to be saved
+
+    Shape:
+        - Input:
+            path: string
+        - Output:
+            model object loaded
+    Examples:
+        model = nn.load("my model.NND")
+    '''
+    return import_saved_weights(path)

@@ -60,10 +60,11 @@ class visualization:
             self.ax1.plot( self.value3 )
             # plt.draw()
             plt.pause(10E-9)
+            plt.savefig(f"Loss/{it-2}.png")
         if it == epoch:
-            plt.savefig("last.png")
-            os.startfile("last.png")
-
+            plt.savefig(f"final Loss.png")
+            os.startfile("final Loss.png")
+            
     def add_two_points_to_graph(self,new_value1,new_value2):
         
         '''
