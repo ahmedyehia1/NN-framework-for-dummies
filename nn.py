@@ -304,7 +304,7 @@ class Model:
                     if(i%batch_size == 0 or i == len(dataset_input)-1):
                         if(i != len(dataset_input)-1):
                             opt.init_delta(self)
-                        opt.update_weights_bias(self,alpha,len(dataset_input))                        
+                        opt.update_weights_bias(self,alpha,batch_size)                        
                 if(graph_on):
                     self.graph.add_point_to_graph(loss_acc)
                 print(loss_acc/len(dataset_input)  , self.layers[-1].A)
