@@ -1,3 +1,7 @@
+'''
+date:23 january
+Author: mohamed emad and mohamed amr mansi
+'''
 import numpy as np
 def sgd(model,alpha,sample,dloss):
     '''
@@ -89,6 +93,16 @@ def batch(model,sample,dloss):
 
 
 def norm(model, size_of_dataset):
+    '''
+    this function used in the FIT function to get the  norm of the LASTLAYER to campere to eipslon  to
+    stop the  while loop
+    Args:
+        model: to get from it the weights_Grad(delta)  of each layer
+        size_of_dataset: length of dateset to make normaliztion to data
+
+    Returns: void
+
+    '''
     norms_weights = 0.0
     norms_bias = 0.0
     norms_weights = np.linalg.norm(model.layers[len(model.layers)-1].weights_Grad / size_of_dataset)
@@ -102,12 +116,31 @@ def norm(model, size_of_dataset):
 
 
 def init_delta(model):
+    '''
+    in this function  i make zeros of all weights_Grad(delta) matrix in begin of
+     optimations of every layer
+    Args:
+        model: to get from it the weights_Grad(delta) of each layer
+
+    Returns:void
+
+    '''
     for i in range(len(model.layers)):
         model.layers[i].weights_Grad = np.zeros_like(model.layers[i].weights_Grad)
         model.layers[i].bias_Grad = np.zeros_like(model.layers[i].bias_Grad)
 
 
 def update_weights_bias(model, alpha, size_of_dataset):
+    '''
+     tis function is rule  to update  weights of each layer  according to that rule --> Wi+1=Wi-Alpha*gard
+    Args:
+        model:to get from it the weights_Grad(delta) and weights  of each layer
+        alpha:Constant ->> learing Constant
+        size_of_dataset:length of date set
+
+    Returns:Void
+
+    '''
     for i in range(len(model.layers)):
         model.layers[i].weights = model.layers[i].weights - alpha * (model.layers[i].weights_Grad / size_of_dataset)
         model.layers[i].bias = model.layers[i].bias - alpha * (model.layers[i].bias_Grad / size_of_dataset)

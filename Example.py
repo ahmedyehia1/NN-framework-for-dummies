@@ -1,35 +1,24 @@
 import numpy as np
 import nn
+from DataPreProcessing import DataPreProcessing as Data
 
 model = nn.Model(
-     nn.Layer(size=(2,1), activation='Relu')
-     #nn.Layer(size=(2,3), activation='Relu'),
-     #nn.Layer(size=(3,1), activation='sigmoid')
-     #nn.Layer(size=(10,6), activation='ReLU'),
-     #nn.Layer(size=(6,1), activation='ReLU')
-
+     nn.Layer(size=(4,5), activation='Relu'),
+     nn.Layer(size=(5,3), activation='Relu'),
+     nn.Layer(size=(3,10), activation='sigmoid'),
+     nn.Layer(size=(10,6), activation='ReLU'),
+     nn.Layer(size=(6,1), activation='ReLU')
 )
 
-x = np.array([[-1, -1], [1, -1], [-1, 1], [1, 1]])
+# import and preprocess data
+x,label = Data.get_data("data_banknote_authentication.csv")
+x = Data.normalize(x)
+X_train, X_test, label_train, label_test = Data.split_data(x,label)
 
-label = np.array([[0], [1], [1], [1]])
+# Train the model
+model.fit(X_train,label_train,'SGD','MSE',alpha = 0.0001,epoch = 15,graph_on = True)
 
-'''
-x = np.array([
-    [2,5,2],
-    [5,3,1],
-    [4,2,6]
-]
-)'''
-test_x = np.array([
-    [2,-5,2],
-    [5,4,-1]
-])
-test_y = np.array([[0],[1]])
-
-
-
-
+<<<<<<< HEAD
 #print(model.forward(x))
 model.fit(x,label,'SGD','MSE',alpha = 0.0001,epoch = 10000,graph_on = True)
 print(model.layers[0].Z)
@@ -37,6 +26,12 @@ for i in x:
     model.forward(i.reshape(1,-1))
     print(model.layers[-1].A)
 #print(model.forward(x))
+=======
+# evaluate the model
+[accuracy,f1_score,confusion_matrix] = model.evaluate(X_test,label_test,metric = ['accuracy','f1 score','confusion matrix'])
+print(f"accuracy: {accuracy}")
+print(f"f1_score: {f1_score}")
+print("confusion matrix:\n",confusion_matrix)
+>>>>>>> 5c7367d1b10df866be48beab2082604d1c893f5e
 
-# accuracy = model.evaluate(test_x,test_y)
-# print(accuracy)
+model.save()
