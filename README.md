@@ -2,6 +2,10 @@
 
 *A simple neural network framework that use similar interface to TensorFlow*
 
+#colab link
+
+	https://colab.research.google.com/drive/1uXPiYy5kjNvUR31bzw_IrnX4zRJ6G3Wx?usp=sharing
+
 # Installation
 
     $ pip install nn-for-dummies
