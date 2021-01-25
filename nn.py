@@ -206,7 +206,7 @@ class Model:
 
 
 #opt.norm(self,len(dataset_input))
-    def fit(self,dataset_input,label,optimization_type,loss_type,alpha,epoch,graph_on = False):
+    def fit(self,dataset_input,label,optimization_type,loss_type,alpha,epoch,batch_size = 0 ,graph_on = False):
         if(graph_on):
             self.graph = vis()
         if len(label.shape) == 1:
@@ -250,7 +250,28 @@ class Model:
                 print(loss_acc/len(dataset_input)  , self.layers[-1].A)
                 if(counter > epoch):
                     break
-
+        #-------------------------------------------      
+        elif(optimization_type == 'minibatch'):
+            while(True):
+                counter += 1
+                loss_acc = 0
+                opt.init_delta(self)
+                for i in range(len(dataset_input)):
+                    self.forward(dataset_input[i].reshape(1,-1))
+                    loss_value , dloss = eval("loss."+str.lower(loss_type)+"(A = self.y , Y = label[i].reshape(1,-1))")
+                    loss_acc += loss_value
+                    opt.batch(self,dataset_input[i].reshape(1,-1),dloss)
+                    if(i%batch_size == 0 or i == len(dataset_input)-1):
+                        if(i != len(dataset_input)-1):
+                            opt.init_delta(self)
+                        opt.update_weights_bias(self,alpha,len(dataset_input))                        
+                if(graph_on):
+                    self.graph.add_point_to_graph(loss_acc)
+                print(loss_acc/len(dataset_input)  , self.layers[-1].A)
+                if(counter > epoch):
+                    break
+                
+            
 
     def evaluate(self,test_x,test_y,metric='Accuracy',beta=1.0):
         '''

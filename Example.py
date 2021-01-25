@@ -31,7 +31,7 @@ test_y = np.array([[0],[1]])
 
 
 #print(model.forward(x))
-model.fit(x,label,'SGD','MSE',alpha = 0.0001,epoch = 10,graph_on = True)
+model.fit(x,label,'SGD','MSE',alpha = 0.0001,epoch = 10000,graph_on = True)
 print(model.layers[0].Z)
 for i in x:
     model.forward(i.reshape(1,-1))

@@ -44,14 +44,14 @@ class visualization:
             # plt.draw()
             plt.pause(.001)
 
-# # default values
-# graph_title = "the graph"
-# first_line = "loss"
-# seconde_line = "percision"
-#
-# p1 = visualization(graph_title,first_line,seconde_line)
-# # p1 = visualization()  # optional attributes
-#
-# p1.add_point_to_graph(5) # add point to the line to draw (one line) # will work after 2nd point
-# p1.add_two_points_to_graph(10,4) # draw two lines
-#
+  #default values
+graph_title = "the graph"
+first_line = "loss"
+seconde_line = "percision"
+
+p1 = visualization(graph_title,first_line,seconde_line)
+# p1 = visualization()  # optional attributes
+
+p1.add_point_to_graph(5) # add point to the line to draw (one line) # will work after 2nd point
+p1.add_two_points_to_graph(10,4) # draw two lines
+
