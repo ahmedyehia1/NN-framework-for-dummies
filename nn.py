@@ -210,11 +210,8 @@ class Model:
         return self.forward(inputs)
 
 
-<<<<<<< HEAD
-#opt.norm(self,len(dataset_input))
+
     def fit(self,dataset_input,label,optimization_type,loss_type,alpha,epoch,batch_size = 0 ,graph_on = False):
-=======
-    def fit(self,dataset_input,label,optimization_type,loss_type,alpha,epoch,graph_on = False):
         '''
         Executing the learning process for a given dataset:
         Args:
@@ -236,7 +233,6 @@ class Model:
             model.fit(X_train,label_train,'SGD','MSE',alpha = 0.0001,epoch = 50,graph_on = True)
         '''
 
->>>>>>> 5c7367d1b10df866be48beab2082604d1c893f5e
         if(graph_on):
             self.graph = vis()
             if not os.path.exists('Loss'):
