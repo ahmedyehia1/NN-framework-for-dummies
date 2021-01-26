@@ -18,20 +18,10 @@ X_train, X_test, label_train, label_test = Data.split_data(x,label)
 # Train the model
 model.fit(X_train,label_train,'SGD','MSE',alpha = 0.0001,epoch = 15,graph_on = True)
 
-<<<<<<< HEAD
-#print(model.forward(x))
-model.fit(x,label,'SGD','MSE',alpha = 0.0001,epoch = 10000,graph_on = True)
-print(model.layers[0].Z)
-for i in x:
-    model.forward(i.reshape(1,-1))
-    print(model.layers[-1].A)
-#print(model.forward(x))
-=======
 # evaluate the model
 [accuracy,f1_score,confusion_matrix] = model.evaluate(X_test,label_test,metric = ['accuracy','f1 score','confusion matrix'])
 print(f"accuracy: {accuracy}")
 print(f"f1_score: {f1_score}")
 print("confusion matrix:\n",confusion_matrix)
->>>>>>> 5c7367d1b10df866be48beab2082604d1c893f5e
 
 model.save()
